@@ -1,0 +1,53 @@
+{
+  "name": "d3b-get-tumor-seg-measurements",
+  "label": "Get tumor measurements from 3D segmentation.",
+  "author": "D3b-TIRU",
+  "maintainer": "D3b-TIRU <flywheel@d3b.center>",
+  "description": "This tool extracts tumor measurements and updates Flywheel file metadata.",
+  "license": "Apache-2.0",
+  "url": "https://github.com/d3b-center/fw-d3b-get-tumor-seg-measurements", 
+  "source": "https://github.com/d3b-center/fw-d3b-get-tumor-seg-measurements", 
+  "version": "0.0.1",
+  "command": "python run.py",
+  "config": {
+    "debug": {
+      "default": false,
+      "description": "Log debug messages",
+      "type": "boolean"
+    }
+  },
+  "custom": {
+    "flywheel": {
+      "suite": "D3b-TIRU"
+    },
+    "gear-builder": {
+      "category": "utility",
+      "image": "chop.flywheel.io/d3b-get-tumor-seg-measurements:0.0.1"
+    }
+  },
+  "inputs": {
+    "input-file": {
+        "base": "file",
+        "description": "Input file (3D tumor segmentation).",
+        "optional": false
+    },
+    "label-mapping": {
+        "base": "file",
+        "description": "Mapping between voxel values and tumor components (Default = D3b-ped-auto-seg-nnunet).",
+        "optional": true
+    },
+    "api-key": {
+      "base": "api-key",
+      "read-only": true
+    }
+  },
+  "environment": {
+    "PATH": "/opt/poetry/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "PYTHON_VERSION": "3.9.7",
+    "PIP_NO_CACHE_DIR": "0",
+    "POETRY_HOME": "/opt/poetry",
+    "POETRY_VERSION": "1.1.11",
+    "POETRY_VIRTUALENVS_CREATE": "false",
+    "FLYWHEEL": "/flywheel/v0"
+  }
+}
