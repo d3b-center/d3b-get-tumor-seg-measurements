@@ -1,16 +1,13 @@
 """Main module."""
 import logging
 import os
-from collections import Counter
 
 from fw_core_client import CoreClient
 from flywheel_gear_toolkit import GearToolkitContext
 import flywheel
 
 from .run_level import get_analysis_run_level_and_hierarchy
-
-import nibabel as nib
-import numpy as np
+from .image_proc import *
 
 log = logging.getLogger(__name__)
 
@@ -35,35 +32,29 @@ def process(seg_filename):
         4: 'edema'
     }
 
-    # load the input segmentation
-    im = nib.load(seg_filename)
-    mask = im.get_fdata()
-    mask = np.rint(mask)
-    max_seg_value = np.max(mask) # maximum value in the segmentation
+    # load input file
+    im,mask = load_nifti_file(seg_filename)
 
-    # Calculate the volume of a single voxel
-    sx, sy, sz = im.header.get_zooms()[:3] # in mm's
-    log.info(f"Voxel dimensions: x={sx}mm, y={sy}mm, z={sz}mm")
-    voxel_volume = sx * sy * sz
-    log.info(f"Volume of a single voxel: {voxel_volume:.2f} mm³")
+    # calculate 3D volumes
+    voxel_volume = get_voxel_volume(im)
+    measure_dictionary = calculate_3d_volumes(mask, voxel_volume, label_mapping)
 
-    # get volumes for the separate ROIs
-    file_dictionary = {}
-    for voxel_value,label in label_mapping.items():
-        # Count the number of non-zero voxels (representing the mask)
-        if voxel_value == 0:
-            wt_mask  = np.logical_and(mask >= 1, mask <= max_seg_value)
-            n_voxels = np.sum(wt_mask)
-            label = 'whole_tumor'
-            voxel_value = 'non-zero'
-        else:
-            n_voxels = np.sum(mask == voxel_value)
-        # total volume is number of voxels * volume of a single voxel
-        volume = n_voxels * voxel_volume
-        file_dictionary[label] = volume
-        log.info(f'Found volume {volume:.2f} mm³ for label {label} (value={voxel_value})')
+    threeD_dictionary = {'3d': measure_dictionary}
 
-    return file_dictionary
+    # calculate CSA using largest 2D diameters of whole tumor
+    largest_slice_index, largest_tumor_slice = find_largest_tumor_slice(mask)
+    ellipse = find_major_minor_axes(largest_tumor_slice)
+    (center, axes, orientation) = ellipse
+    major_axis, minor_axis = max(axes), min(axes)
+    csa = calculate_cross_section_area_approx(major_axis, minor_axis)
+
+    twoD_dictionary = {'2d': {'major_axis': major_axis,
+                              'minor_axis': minor_axis,
+                              'largest_slice_index': largest_slice_index,
+                              'cross_sectional_area': csa,
+                              }}
+
+    return threeD_dictionary,twoD_dictionary
 
 def run(seg_filename):
     """Processes file at file_path.

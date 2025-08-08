@@ -23,8 +23,8 @@ The gear will take a 3D segmentation and calculate the total volume (mm³) for t
 
 ### Inputs
 
-* input-file: Segmentation image to process (nifti).
-* label-mapping: Mapping between voxel values and tumor components.   
+* __input-file:__ Segmentation image to process (nifti).
+* __label-mapping:__ Mapping between voxel values and tumor components.   
     Default:  
         1 = Enhancing  
         2 = Non-enhancing  
@@ -33,34 +33,38 @@ The gear will take a 3D segmentation and calculate the total volume (mm³) for t
 
 ### Outputs
 
-Session metadata updated with measurements for each label: `session.info.measurements.volume.[3d/2d]_[model_prediction/manual].[label]`
+Session metadata updated with measurements: `session.info.measurements.tumor_segm.[model_prediction/manual].[3d/2d].[measurement]`
 
 Such as (default):
 
-- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].whole_tumor
-- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].enhancing
-- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].non_enhancing
-- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].cystic
-- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].edema
+- session.info.measurements.tumor_segm.[model_prediction/manual].3d.whole_tumor
+- session.info.measurements.tumor_segm.[model_prediction/manual].3d.enhancing
+- session.info.measurements.tumor_segm.[model_prediction/manual].3d.non_enhancing
+- session.info.measurements.tumor_segm.[model_prediction/manual].3d.cystic
+- session.info.measurements.tumor_segm.[model_prediction/manual].3d.edema
 
-Where:
+- session.info.measurements.tumor_segm.[model_prediction/manual].2d.major_axis
+- session.info.measurements.tumor_segm.[model_prediction/manual].2d.minor_axis
+- session.info.measurements.tumor_segm.[model_prediction/manual].2d.largest_slice_index
+- session.info.measurements.tumor_segm.[model_prediction/manual].2d.cross_sectional_area
+
+Where, for 3D:
 - Whole tumor = total volume of all non-zero voxels
 - Enhancing = total volume of all voxels with value of 1
 - Non-enhancing = total volume of all voxels with value of 2
 - Cystic = total volume of all voxels with value of 3
 - Edema = total volume of all voxels with value of 4
 
-& whole tumor volume & subcomponent volumes for:
-- 3D volume
-- 2D volume by bidirectional measurements at slice with greatest 3D width
+For 2D:
+CSA = 2D cross-sectional area by bidirectional measurements at slice with greatest 3D width
 
 ### Configuration
 
 * __segmentation_type__ (number, default 0): Whether the input segmentation was created manually or model-predicted. 0=get from file-name, 1=manual, 2=model-predicted. If 0, relies on "manual" or "pred" in the file name to determine the output metadata.
 * __debug__ (boolean, default False): Include debug statements in output.
 
+
 ## :exclamation: Limitations
 
 - uses __all__ non-zero voxels to calculate whole-tumor
-- calculation of volume from 2D diameter, to be implemented
-- support for alternative label mappings, to be implemented
+- support for alternative label mappings not implemented yet

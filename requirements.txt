@@ -4,3 +4,4 @@ flywheel-sdk==16.19.2
 fw-core-client==1.1.2
 nibabel==3.2.2
 numpy==1.24.0
+opencv-python-headless

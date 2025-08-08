@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "url": "https://github.com/d3b-center/fw-d3b-get-tumor-seg-measurements", 
   "source": "https://github.com/d3b-center/fw-d3b-get-tumor-seg-measurements", 
-  "version": "0.0.3",
+  "version": "0.0.4",
   "command": "python run.py",
   "custom": {
     "flywheel": {
@@ -15,7 +15,7 @@
     },
     "gear-builder": {
       "category": "utility",
-      "image": "chop.flywheel.io/d3b-get-tumor-seg-measurements:0.0.3"
+      "image": "chop.flywheel.io/d3b-get-tumor-seg-measurements:0.0.4"
     }
   },
   "inputs": {
@@ -36,10 +36,9 @@
   },
   "config": {
     "segmentation_type": {
-      "description": "Whether the input segmentation is manual or model-predicted. 0=get from file-name, 1=manual, 2=model-predicted.",
+      "description": "Whether the input segmentation is manual or model-predicted. 0=get from file-name (default), 1=manual, 2=model-predicted.",
       "type": "number",
       "default": 0,
-      "optional": true,
       "minimum": 0,
       "maximum": 2
     },
