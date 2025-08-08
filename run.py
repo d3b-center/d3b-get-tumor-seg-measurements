@@ -23,13 +23,6 @@ def main(context: GearToolkitContext) -> None:  # pragma: no cover
     session = context.client.get(acquisition.parents.session)
     # project = context.client.get(acquisition.parents.project)
 
-    # process
-    fe = run( 
-        file_path,
-    )
-
-    # Update session metadata
-    session = session.reload()
     # get the segmentation type either from file-name
     # or user-input (optional config parameter)
     if config['segmentation_type'] == 0:
@@ -44,9 +37,15 @@ def main(context: GearToolkitContext) -> None:  # pragma: no cover
     elif config['segmentation_type'] == 2:
         seg_type = 'model_predicted'    
     
+    # process
+    fe = run( 
+        file_path,
+    )
+
     # add measurements to session metadata
-    for label,measurement in fe:
-        session.update_info({f'measurements.3d.{seg_type}.{label}': measurement})
+    session = session.reload()
+    session.update_info({'measurements': {f'3d_{seg_type}' : fe}})
+    log.info(f"Updated session {session.label} metadata")
 
     return 0
 
