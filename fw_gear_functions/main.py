@@ -43,9 +43,9 @@ def process(seg_filename):
 
     # Calculate the volume of a single voxel
     sx, sy, sz = im.header.get_zooms()[:3] # in mm's
-    print(f"Voxel dimensions: x={sx}mm, y={sy}mm, z={sz}mm")
+    log.info(f"Voxel dimensions: x={sx}mm, y={sy}mm, z={sz}mm")
     voxel_volume = sx * sy * sz
-    print(f"Volume of a single voxel: {voxel_volume:.2f} mm³")
+    log.info(f"Volume of a single voxel: {voxel_volume:.2f} mm³")
 
     # get volumes for the separate ROIs
     file_dictionary = {}
