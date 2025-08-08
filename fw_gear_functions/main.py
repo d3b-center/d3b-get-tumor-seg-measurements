@@ -46,10 +46,10 @@ def process(seg_filename):
     major_axis, minor_axis = max(axes), min(axes)
     csa = calculate_cross_section_area_ellipse(major_axis, minor_axis)
 
-    twoD_dictionary = {'major_axis': major_axis,
-                              'minor_axis': minor_axis,
-                              'largest_slice_index': largest_slice_index,
-                              'cross_sectional_area': csa,
+    twoD_dictionary = {'major_axis': int(major_axis),
+                              'minor_axis': int(minor_axis),
+                              'largest_slice_index': int(largest_slice_index),
+                              'cross_sectional_area': int(csa),
                               }
 
     return threeD_dictionary,twoD_dictionary
