@@ -33,15 +33,15 @@ The gear will take a 3D segmentation and calculate the total volume (mm³) for t
 
 ### Outputs
 
-Session metadata updated with measurements for each label: `session.info.measurements.[3d/2d]_[model_prediction/manual].[label]`
+Session metadata updated with measurements for each label: `session.info.measurements.volume.[3d/2d]_[model_prediction/manual].[label]`
 
 Such as (default):
 
-- session.info.measurements.[3d/2d]_[model_prediction/manual].whole_tumor
-- session.info.measurements.[3d/2d]_[model_prediction/manual].enhancing
-- session.info.measurements.[3d/2d]_[model_prediction/manual].non_enhancing
-- session.info.measurements.[3d/2d]_[model_prediction/manual].cystic
-- session.info.measurements.[3d/2d]_[model_prediction/manual].edema
+- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].whole_tumor
+- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].enhancing
+- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].non_enhancing
+- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].cystic
+- session.info.measurements.volume.[3d/2d]_[model_prediction/manual].edema
 
 Where:
 - Whole tumor = total volume of all non-zero voxels
