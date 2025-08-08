@@ -47,8 +47,8 @@ def main(context: GearToolkitContext) -> None:  # pragma: no cover
     session_info = session.info
     if 'measurements' not in session_info.keys():
         session_info['measurements'] = {}
-    session_info['measurements']['tumor_segm'] = {f'{seg_type}' : {threeD_dictionary, twoD_dictionary}}
-    # session_info.update({'measurements': {'tumor_segm': {f'{seg_type}' : {threeD_dictionary, twoD_dictionary}}}})
+    session_info['measurements']['tumor_segm'][seg_type]['3d'] = threeD_dictionary
+    session_info['measurements']['tumor_segm'][seg_type]['2d'] = twoD_dictionary
     session.update_info(session_info)
     log.info(f"Updated session {session.label} metadata")
 

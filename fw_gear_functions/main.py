@@ -37,9 +37,7 @@ def process(seg_filename):
 
     # calculate 3D volumes
     voxel_volume = get_voxel_volume(im)
-    measure_dictionary = calculate_3d_volumes(mask, voxel_volume, label_mapping)
-
-    threeD_dictionary = {'3d': measure_dictionary}
+    threeD_dictionary = calculate_3d_volumes(mask, voxel_volume, label_mapping)
 
     # calculate CSA using largest 2D diameters of whole tumor
     largest_slice_index, largest_tumor_slice = find_largest_tumor_slice(mask)
@@ -48,11 +46,11 @@ def process(seg_filename):
     major_axis, minor_axis = max(axes), min(axes)
     csa = calculate_cross_section_area_ellipse(major_axis, minor_axis)
 
-    twoD_dictionary = {'2d': {'major_axis': major_axis,
+    twoD_dictionary = {'major_axis': major_axis,
                               'minor_axis': minor_axis,
                               'largest_slice_index': largest_slice_index,
                               'cross_sectional_area': csa,
-                              }}
+                              }
 
     return threeD_dictionary,twoD_dictionary
 
