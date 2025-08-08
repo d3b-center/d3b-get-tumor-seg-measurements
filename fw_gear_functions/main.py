@@ -1,6 +1,7 @@
 """Main module."""
 import logging
 import os
+from collections import Counter
 
 from fw_core_client import CoreClient
 from flywheel_gear_toolkit import GearToolkitContext
@@ -26,42 +27,41 @@ def process(seg_filename):
         dict: Dictionary containing the file meta.
     """
 
-    # initialize output
-    file_dictionary = {'whole_tumor':0,
-                       'enhancing':0,
-                       'nonenhancing':0,
-                       'cyst':0,
-                       'edema':0,
-                       }
+    label_mapping = {
+        0: 'background',
+        1: 'enhancing',
+        2: 'nonenhancing',
+        3: 'cyst',
+        4: 'edema'
+    }
 
     # load the input segmentation
-    mask = nib.load(seg_filename).get_fdata()
+    im = nib.load(seg_filename)
+    mask = im.get_fdata()
     mask = np.rint(mask)
+    max_seg_value = np.max(mask) # maximum value in the segmentation
 
-    # get the separate ROIs
-    enhancing_mask = np.logical_and(mask >= 1, mask <= 1)
-    nonenhancing_mask = np.logical_and(mask >= 2, mask <= 2)
-    cyst_mask = np.logical_and(mask >= 3, mask <= 3)
-    edema_mask = np.logical_and(mask >= 4, mask <= 4)
-    wt_mask = np.logical_and(mask >= 1, mask <= 3)
+    # Calculate the volume of a single voxel
+    sx, sy, sz = im.header.get_zooms()[:3] # in mm's
+    print(f"Voxel dimensions: x={sx}mm, y={sy}mm, z={sz}mm")
+    voxel_volume = sx * sy * sz
+    print(f"Volume of a single voxel: {voxel_volume:.2f} mm³")
 
-    # calculate the number of voxels in each mask
-    #   because we know the images are 1x1x1mm isotropic,
-    #   we can just sum the voxels to get the volume in mm^3
-    file_dictionary['enhancing'] = np.sum(enhancing_mask)
-    log.info('Added ENHANCING tumor statistics')
-
-    file_dictionary['nonenhancing'] = np.sum(nonenhancing_mask)
-    log.info('Added NON-ENHANCING tumor statistics')
-
-    file_dictionary['cyst'] = np.sum(cyst_mask)
-    log.info('Added CYST statistics')
-
-    file_dictionary['edema'] = np.sum(edema_mask)
-    log.info('Added EDEMA statistics')
-
-    file_dictionary['whole_tumor'] = np.sum(wt_mask)
-    log.info('Added WHOLE TUMOR (enhance + non-enhance) statistics')
+    # get volumes for the separate ROIs
+    file_dictionary = {}
+    for voxel_value,label in label_mapping.items():
+        # Count the number of non-zero voxels (representing the mask)
+        if voxel_value == 0:
+            wt_mask  = np.logical_and(mask >= 1, mask <= max_seg_value)
+            n_voxels = np.sum(wt_mask)
+            label = 'whole_tumor'
+            voxel_value = 'non-zero'
+        else:
+            n_voxels = np.sum(mask == voxel_value)
+        # total volume is number of voxels * volume of a single voxel
+        volume = n_voxels * voxel_volume
+        file_dictionary[label] = volume
+        log.info(f'Found volume {volume:.2f} mm³ for label {label} (value={voxel_value})')
 
     return file_dictionary
 
