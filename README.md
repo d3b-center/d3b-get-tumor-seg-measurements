@@ -68,3 +68,4 @@ CSA = 2D cross-sectional area by bidirectional measurements at slice with greate
 
 - uses __all__ non-zero voxels to calculate whole-tumor
 - support for alternative label mappings not implemented yet
+- 2D measurements may error with multi-focal tumors, will result in 'None' measurements

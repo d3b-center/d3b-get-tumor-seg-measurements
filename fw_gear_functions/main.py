@@ -40,17 +40,25 @@ def process(seg_filename):
     threeD_dictionary = calculate_3d_volumes(mask, voxel_volume, label_mapping)
 
     # calculate CSA using largest 2D diameters of whole tumor
-    largest_slice_index, largest_tumor_slice = find_largest_tumor_slice(mask)
-    ellipse = find_major_minor_axes(largest_tumor_slice)
-    (center, axes, orientation) = ellipse
-    major_axis, minor_axis = max(axes), min(axes)
-    csa = calculate_cross_section_area_ellipse(major_axis, minor_axis)
+    try:
+        largest_slice_index, largest_tumor_slice = find_largest_tumor_slice(mask)
+        ellipse = find_major_minor_axes(largest_tumor_slice)
+        (center, axes, orientation) = ellipse
+        major_axis, minor_axis = max(axes), min(axes)
+        csa = calculate_cross_section_area_ellipse(major_axis, minor_axis)
 
-    twoD_dictionary = {'major_axis': int(major_axis),
-                              'minor_axis': int(minor_axis),
-                              'largest_slice_index': int(largest_slice_index),
-                              'cross_sectional_area': int(csa),
-                              }
+        twoD_dictionary = {'major_axis': int(major_axis),
+                                'minor_axis': int(minor_axis),
+                                'largest_slice_index': int(largest_slice_index),
+                                'cross_sectional_area': int(csa),
+                                }
+
+    except:
+        twoD_dictionary = {'major_axis': None,
+                            'minor_axis': None,
+                            'largest_slice_index': None,
+                            'cross_sectional_area': None,
+                            }
 
     return threeD_dictionary,twoD_dictionary
 
