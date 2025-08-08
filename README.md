@@ -31,6 +31,11 @@ The gear will take a 3D segmentation and calculate the total volume (mm³) for t
         3 = Cystic  
         4 = Edema  
 
+### Configuration
+
+* __segmentation_type__ (number, default 0): Whether the input segmentation was created manually or model-predicted. 0=get from file-name, 1=manual, 2=model-predicted. If 0, relies on "manual" or "pred" in the file name to determine the output metadata.
+* __debug__ (boolean, default False): Include debug statements in output.
+
 ### Outputs
 
 Session metadata updated with measurements: `session.info.measurements.tumor_segm.[model_prediction/manual].[3d/2d].[measurement]`
@@ -57,11 +62,6 @@ Where, for 3D:
 
 For 2D:
 CSA = 2D cross-sectional area by bidirectional measurements at slice with greatest 3D width
-
-### Configuration
-
-* __segmentation_type__ (number, default 0): Whether the input segmentation was created manually or model-predicted. 0=get from file-name, 1=manual, 2=model-predicted. If 0, relies on "manual" or "pred" in the file name to determine the output metadata.
-* __debug__ (boolean, default False): Include debug statements in output.
 
 
 ## :exclamation: Limitations
