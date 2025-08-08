@@ -46,7 +46,7 @@ def process(seg_filename):
     ellipse = find_major_minor_axes(largest_tumor_slice)
     (center, axes, orientation) = ellipse
     major_axis, minor_axis = max(axes), min(axes)
-    csa = calculate_cross_section_area_approx(major_axis, minor_axis)
+    csa = calculate_cross_section_area_ellipse(major_axis, minor_axis)
 
     twoD_dictionary = {'2d': {'major_axis': major_axis,
                               'minor_axis': minor_axis,

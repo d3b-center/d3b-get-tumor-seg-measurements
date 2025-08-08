@@ -4,6 +4,7 @@ log = logging.getLogger(__name__)
 import nibabel as nib
 import numpy as np
 import cv2
+import math
 
 def load_nifti_file(file_path):
     """Load a NIfTI file and return its image object and data."""
@@ -58,7 +59,7 @@ def find_major_minor_axes(slice):
     ellipse = cv2.fitEllipse(largest_contour)
     return ellipse
 
-def calculate_cross_section_area_approx(diameter1, diameter2):
+def calculate_cross_section_area_ellipse(diameter1, diameter2):
   """
   Calculates the approximate cross-sectional area using the product of two perpendicular diameters.
 
@@ -69,4 +70,4 @@ def calculate_cross_section_area_approx(diameter1, diameter2):
   Returns:
     The approximate cross-sectional area.
   """
-  return diameter1 * diameter2
+  return math.pi * diameter1 * diameter2
