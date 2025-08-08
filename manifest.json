@@ -7,22 +7,15 @@
   "license": "Apache-2.0",
   "url": "https://github.com/d3b-center/fw-d3b-get-tumor-seg-measurements", 
   "source": "https://github.com/d3b-center/fw-d3b-get-tumor-seg-measurements", 
-  "version": "0.0.1",
+  "version": "0.0.3",
   "command": "python run.py",
-  "config": {
-    "debug": {
-      "default": false,
-      "description": "Log debug messages",
-      "type": "boolean"
-    }
-  },
   "custom": {
     "flywheel": {
       "suite": "D3b-TIRU"
     },
     "gear-builder": {
       "category": "utility",
-      "image": "chop.flywheel.io/d3b-get-tumor-seg-measurements:0.0.1"
+      "image": "chop.flywheel.io/d3b-get-tumor-seg-measurements:0.0.3"
     }
   },
   "inputs": {
@@ -33,12 +26,27 @@
     },
     "label-mapping": {
         "base": "file",
-        "description": "Mapping between voxel values and tumor components (Default = D3b-ped-auto-seg-nnunet).",
+        "description": "Mapping between voxel values and tumor components (Default = d3b-ped-auto-seg-nnunet).",
         "optional": true
     },
     "api-key": {
       "base": "api-key",
       "read-only": true
+    }
+  },
+  "config": {
+    "segmentation_type": {
+      "description": "Whether the input segmentation is manual or model-predicted. 0=get from file-name, 1=manual, 2=model-predicted.",
+      "type": "number",
+      "default": 0,
+      "optional": true,
+      "minimum": 0,
+      "maximum": 2
+    },
+    "debug": {
+      "description": "Log debug messages",
+      "type": "boolean",
+      "default": false
     }
   },
   "environment": {
