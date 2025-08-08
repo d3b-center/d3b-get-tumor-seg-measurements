@@ -19,8 +19,6 @@ def main(context: GearToolkitContext) -> None:  # pragma: no cover
     file_ = context.get_input("input-file")
 
     # get parent
-    # acq = context.client.get_acquisition(file_["hierarchy"]["id"])
-    session = context.client.get_session(file_["hierarchy"]["id"])
     # project = context.client.get(acquisition.parents.project)
 
     # process
@@ -30,18 +28,23 @@ def main(context: GearToolkitContext) -> None:  # pragma: no cover
 
     # Update session metadata
     session = session.reload()
-    file_name = os.path.basename(file_path)
-    file_name = file_name.lower()
-    if 'manual' in file_name:
+    # get the segmentation type either from file-name
+    # or user-input (optional config parameter)
+    if config['segmentation_type'] == 0:
+        file_name = os.path.basename(file_path)
+        file_name = file_name.lower()
+        if 'manual' in file_name:
+            seg_type = 'manual'
+        elif 'pred' in file_name:
+            seg_type = 'model_predicted'
+    elif config['segmentation_type'] == 1:
         seg_type = 'manual'
-    elif 'pred' in file_name:
-        seg_type = 'model_predicted'
+    elif config['segmentation_type'] == 2:
+        seg_type = 'model_predicted'    
     
+    # add measurements to session metadata
     for label,measurement in fe:
         session.update_info({f'measurements.3d.{seg_type}.{label}': measurement})
-
-    # clean up temp files
-    # os.remove(seg_filename)
 
     return 0
 
